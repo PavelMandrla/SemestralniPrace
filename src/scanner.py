@@ -34,6 +34,7 @@ class Scanner(object):
         turn_table_step = 360 / settings["turn_table_positions"]
         for x in range(settings["turn_table_positions"]):
             self.turn_table.turn(turn_table_step)
+            self.camera.capture("../hello.png")
             sleep(1)
 
     def scan(self):
