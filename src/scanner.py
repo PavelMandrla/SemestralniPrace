@@ -2,6 +2,8 @@ from settings import settings
 from motor import Motor
 from camera import Camera
 from time import sleep
+from datetime import datetime
+import os
 
 
 class Scanner(object):
@@ -28,20 +30,49 @@ class Scanner(object):
             tt_settings['acc'],
             tt_settings['gear_ratio']
             )
-        self.camera = Camera()
+
+    def get_save_dir(self):
+        now = datetime.now()
+        candidate_dir = settings["save_dir"] + now.strftime("scan_%d.%m.%Y_%H:%M")
+
+        if os.path.exists(candidate_dir):
+            i = 1
+            candidate_dir += candidate_dir + "_%s"
+            while os.path.exists(candidate_dir % (i)):
+                i += 1
+            candidate_dir = candidate_dir % (i)
+
+        os.makedirs(candidate_dir)
+        return candidate_dir
 
     def turn_table_routine(self):
         turn_table_step = 360 / settings["turn_table_positions"]
         for x in range(settings["turn_table_positions"]):
             self.turn_table.turn(turn_table_step)
-            self.camera.capture("../hello.png")
+            print("%s/%d.png" % (self.result_dir, self.frame_num))
+
+            self.camera.capture("%s/%d.png" % (self.result_dir, self.frame_num))
+            self.frame_num += 1
             sleep(1)
 
     def scan(self):
-        arm_step = settings["arm_angle"] / (settings["arm_positions"]-1)
-        self.arm.turn(-settings["arm_angle"]/2)
-        self.turn_table_routine()
-        for x in range(settings["arm_positions"]-1):
-            self.arm.turn(arm_step)
+        self.camera = Camera()
+        self.frame_num = 0
+
+        self.result_dir = self.get_save_dir()
+        print(self.result_dir)
+
+        try:
+            arm_step = settings["arm_angle"] / (settings["arm_positions"]-1)
+            self.arm.turn(-settings["arm_angle"]/2)
             self.turn_table_routine()
-        self.arm.turn(-settings["arm_angle"]/2)
+            for x in range(settings["arm_positions"]-1):
+                self.arm.turn(arm_step)
+                self.turn_table_routine()
+            self.arm.turn(-settings["arm_angle"]/2)
+        except:
+            print("camera problem")
+        finally:
+            self.camera.release_camera()
+            self.camera = 0
+            print("fml")

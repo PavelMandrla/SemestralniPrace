@@ -1,9 +1,8 @@
-#from settings import ScannerSettings
 from settings import settings
-from motor import Motor
-from camera import Camera
 from scanner import Scanner
+import sys
 
-settings.load_settings("../settings.js")
+
+settings.load_settings(str(sys.argv[1]))
 scanner = Scanner()
 scanner.scan()
