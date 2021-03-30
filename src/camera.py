@@ -1,4 +1,5 @@
 from settings import settings
+import numpy as np
 import cv2
 
 
@@ -30,13 +31,26 @@ class Camera:
             )
         )
 
+    '''
+    def capture(self, filepath):
+        cap = cv2.VideoCapture(self.get_gstreamer_pipeline(), cv2.CAP_GSTREAMER)
+        if not self.cap.isOpened():
+            raise Exception("Could not open camera.")
+        ret, img = cap.read()
+        cv2.imwrite(filepath, img)
+        cap.release()
+
+    '''
+
     def __init__(self):
         self.cap = cv2.VideoCapture(self.get_gstreamer_pipeline(), cv2.CAP_GSTREAMER)
         if not self.cap.isOpened():
             raise Exception("Could not open camera, while creating the camera object.")
 
     def release_camera(self):
+        print("releasing")
         self.cap.release()
+        print("released")
 
     def capture(self, filepath):
         if self.cap.isOpened():

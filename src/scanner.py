@@ -49,30 +49,28 @@ class Scanner(object):
         turn_table_step = 360 / settings["turn_table_positions"]
         for x in range(settings["turn_table_positions"]):
             self.turn_table.turn(turn_table_step)
-            print("%s/%d.png" % (self.result_dir, self.frame_num))
 
-            self.camera.capture("%s/%d.png" % (self.result_dir, self.frame_num))
+            try:
+                self.camera.capture("%s/%d.png" % (self.result_dir, self.frame_num))
+            except:
+                print("camera problem")
             self.frame_num += 1
             sleep(1)
 
     def scan(self):
         self.camera = Camera()
         self.frame_num = 0
-
         self.result_dir = self.get_save_dir()
-        print(self.result_dir)
 
-        try:
-            arm_step = settings["arm_angle"] / (settings["arm_positions"]-1)
-            self.arm.turn(-settings["arm_angle"]/2)
+        arm_step = settings["arm_angle"] / (settings["arm_positions"]-1)
+        self.arm.turn(-settings["arm_angle"]/2)
+        self.turn_table_routine()
+        for x in range(settings["arm_positions"]-1):
+            self.arm.turn(arm_step)
             self.turn_table_routine()
-            for x in range(settings["arm_positions"]-1):
-                self.arm.turn(arm_step)
-                self.turn_table_routine()
-            self.arm.turn(-settings["arm_angle"]/2)
-        except:
-            print("camera problem")
-        finally:
-            self.camera.release_camera()
-            self.camera = 0
-            print("fml")
+        self.arm.turn(-settings["arm_angle"]/2)
+
+        #self.camera.capture('test.png')
+
+        self.camera.release_camera()
+        self.camera = 0
