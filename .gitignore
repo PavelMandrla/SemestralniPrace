@@ -1,2 +1,13 @@
 src/__pycache__/
 *.png
+
+# Ignore everything in tex
+tex/*
+
+# But not these files...
+!tex/Project.tex
+!tex/biblatex-src.bib
+!tex/diplomalst.sty
+!tex/diploma.cls
+!tex/Chapters/*
+!tex/Figures/*
