@@ -1,0 +1,17 @@
+\chapter{My contribution //TODO -> rename}
+\label{sec:contribution}
+I have chosen to work with the OpenScan project because of multiple reasons.
+First I was wery interested in photogrammetry and its use for 3D reconstruction.
+It alseo seemed to me, that the project has a lot of potential to become succesfull even within the more casual part of the 3D printing comunity, as it is easy to setup and has a simple user interface.
+It alse uses the more simplistic aproach of using photogrammetry, which requires less calibration than the use of structured light, so it is very user friendly.
+I also liked that the scanner does not just rotate the object along the Z axis, but allows the camera to capture the object from the top and bottom.
+
+Where I saw room for improvement, was that the output of the scanner is not a finished 3D representation of the scanned object, such as an .stl file, but just a set of images that the user has to process himself with an additional tool, such as Meshroom.
+
+The author of the project has since started working on his own solution to this problem and in February launched a beta of "OpenScan Cloud", which is a cloud service, that automaticly processes the scanned images and produces the resulting 3D mesh.
+
+I have decided to use a slightly different approach, and instead of sending the scanned pictures onto a server, where the processing and asembly would be done, I would do the required calculation locally.
+The only problem with this approach, is that the Raspberry Pi, which is used by the OpenScan project, is not powerful enough, to do the required processing.
+Because of this reason, I've decided to replace the Raspberry Pi with a more powerful alternative, which is the Jetson Xavier NX by Nvidia.
+
+\endinput
