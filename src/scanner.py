@@ -50,10 +50,10 @@ class Scanner(object):
         for x in range(settings["turn_table_positions"]):
             self.turn_table.turn(turn_table_step)
 
-            try:
-                self.camera.capture("%s/%d.png" % (self.result_dir, self.frame_num))
-            except:
-                print("camera problem")
+            #try:
+            self.camera.capture("%s/%d.png" % (self.result_dir, self.frame_num))
+            #except:
+                #print("camera problem")
             self.frame_num += 1
             sleep(1)
 
