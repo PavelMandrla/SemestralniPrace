@@ -61,6 +61,7 @@ class Scanner(object):
         self.camera = Camera()
         self.frame_num = 0
         self.result_dir = self.get_save_dir()
+        settings['current_save_dir'] = self.result_dir
 
         arm_step = settings["arm_angle"] / (settings["arm_positions"]-1)
         self.arm.turn(-settings["arm_angle"]/2)

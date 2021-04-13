@@ -1,7 +1,7 @@
 {
    "arm_angle" : 60,
    "arm_positions" : 3,
-   "turn_table_positions" : 2,
+   "turn_table_positions" : 6,
 
    "save_dir" : "/home/user/",
 
@@ -26,10 +26,10 @@
    "camera": {
       "capture_width" : 3280,
       "capture_height" : 2464,
-      "display_width" : 820,
-      "display_height" : 616,
+      "display_width" : 1600,
+      "display_height" : 1200,
       "framerate" : 21,
-      "flip_method" : 0
+      "flip_method" : 2
    }
 
 }

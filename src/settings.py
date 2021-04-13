@@ -21,7 +21,10 @@ class ScannerSettings:
         with open(self.srcFile) as input:
             self.settings = json.load(input)
 
-    def __getitem__(self,key):
+    def __getitem__(self, key):
         return self.settings[key]
+
+    def __setitem__(self, key, value):
+        self.settings[key] = value
 
 settings = ScannerSettings()
