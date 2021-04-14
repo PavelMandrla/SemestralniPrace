@@ -1,9 +1,10 @@
 {
    "arm_angle" : 60,
-   "arm_positions" : 3,
-   "turn_table_positions" : 6,
+   "arm_positions" : 1,
+   "turn_table_positions" : 20,
 
    "save_dir" : "/home/user/",
+   "reconstruct" : false,
 
    "turn_table" : {
          "dir_pin" : 9,

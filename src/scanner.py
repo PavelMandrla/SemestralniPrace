@@ -49,13 +49,10 @@ class Scanner(object):
         turn_table_step = 360 / settings["turn_table_positions"]
         for x in range(settings["turn_table_positions"]):
             self.turn_table.turn(turn_table_step)
-
-            #try:
+            sleep(0.5)
             self.camera.capture("%s/%d.png" % (self.result_dir, self.frame_num))
-            #except:
-                #print("camera problem")
             self.frame_num += 1
-            sleep(1)
+            #sleep(1)
 
     def scan(self):
         self.camera = Camera()
@@ -63,15 +60,16 @@ class Scanner(object):
         self.result_dir = self.get_save_dir()
         settings['current_save_dir'] = self.result_dir
 
-        arm_step = settings["arm_angle"] / (settings["arm_positions"]-1)
-        self.arm.turn(-settings["arm_angle"]/2)
-        self.turn_table_routine()
-        for x in range(settings["arm_positions"]-1):
-            self.arm.turn(arm_step)
+        if settings["arm_positions"] == 1:
             self.turn_table_routine()
-        self.arm.turn(-settings["arm_angle"]/2)
-
-        #self.camera.capture('test.png')
+        else:
+            arm_step = settings["arm_angle"] / (settings["arm_positions"]-1)
+            self.arm.turn(-settings["arm_angle"]/2)
+            self.turn_table_routine()
+            for x in range(settings["arm_positions"]-1):
+                self.arm.turn(arm_step)
+                self.turn_table_routine()
+            self.arm.turn(-settings["arm_angle"]/2)
 
         self.camera.release_camera()
         self.camera = 0

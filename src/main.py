@@ -8,4 +8,5 @@ import reconstructor
 settings.load_settings(str(sys.argv[1]))
 scanner = Scanner()
 scanner.scan()
-reconstructor.reconstruct()
+if settings['reconstruct']:
+    reconstructor.reconstruct()
