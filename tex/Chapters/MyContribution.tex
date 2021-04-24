@@ -15,7 +15,7 @@ The only problem with this approach, is that the Raspberry Pi, which is used by 
 Because of this reason, I've decided to replace the Raspberry Pi with a more powerful alternative, which is the Jetson Xavier NX by Nvidia.
 Its more powerful processor, larger memory and CUDA capable graphics card allowed me to process the scanned data locally, without the need to send it to a server for 3D mesh reconstruction.
 
-\section{Used technologies}
+\section{Evaluation of the existing solution}
 With the change of the platform, some problems with the current solution became apparent.
 Even though the software for the scanner was created using platform independent technologies, the code itself was writen without the prospect of running on a different platform.
 The main cause of this was in my opinion the use of the programming tool Node-RED.
@@ -24,9 +24,31 @@ Some nodes can for example contain JavaScript code, that will be executed, when 
 
 The author of the OpenScan project decided to use an extension, which allowed him to use Python instead of JavaScript.
 This solution did not allow for easy reuse of the python code, and so the code for each functionality had to be rewritten inside each node, that was using that functionality.
-For that reason the code structure of scanners software became quite bloated and chaotic.
 
-Therefore I have decided to create my own software, which would controll the scanner.
+I also belive, this was the reason, why the author decied to store each parameter of the scanners configuration in a separate file.
+Whenever the software needs to know the value of a parameter, such as the number of photos, the scaner should take, or the number of the GPIO pin used by a stepper motor, it loads a file, which contains the parameters value.
+Because the paths to these configuration files are hardcoded in the codebase, any changes to the configuration code is very difficult.
+
+For these reasons, the code structure of the scanners software became quite bloated and chaotic, which must make maintanace of this project a hard task.
+It also means, that moving the codebase to a different platform would be quite complicated.
+
+
+\section{Used technologies}
+Because of the reasons stated in the previous section, I have decided to create my own software, which would controll the scanner.
+As my languague of choice, I used Python 3, because the Jetson provides an easy to use interface to use the GPIO pins, with Python.
+It also allowed me to reuse some parts of the original OpenScan software, such as the code that controlls the stepper motors, which I adjusted to suite my needs.
+I also replaced the many configuration files, with a single JSON document, which contains the values of each parameter and is loaded into memory after the start of the scanning procedure.
+
+My implementation was mainly concerned with the scanning process itself, as I decided not to reimplement some features of the openscan project, such as the web-based user interface, or the use of a SAMBA protocol to easily share the scanned files, as they were not crutial for my project.
+
+//TODO - > elaborate on my implementation
+
+
+The move from Node-RED to Python3 made the codebase much more compact and easily maintainable.
+I belive, that this would be the right move for the project in the future, because it would make addition of new feateures and maintanance much easier.
+
+
+
 
 
 
