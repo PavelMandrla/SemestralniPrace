@@ -2,15 +2,14 @@
 \label{sec:contribution}
 I have chosen to work with the OpenScan project because of multiple reasons.
 First I was wery interested in photogrammetry and its use for 3D reconstruction.
-It alseo seemed to me, that the project has a lot of potential to become succesfull even within the more casual part of the 3D printing comunity, as it is easy to setup and has a simple user interface.
-It alse uses the more simplistic aproach of using photogrammetry, which requires less calibration than the use of structured light, so it is very user friendly.
+It alseo seemed to me, that the project has a lot of potential to become succesfull even with the more casual part of the 3D printing comunity, as it is easy to setup and has a simple user interface.
+It also uses the more simplistic aproach of using photogrammetry, which requires less calibration than the use of structured light, so it is very user friendly.
 I also liked that the scanner does not just rotate the object along the Z axis, but allows the camera to capture the object from the top and bottom.
 
 Where I saw room for improvement, was that the output of the scanner is not a finished 3D representation of the scanned object, such as an .stl file, but just a set of images that the user has to process himself with an additional tool, such as Meshroom.
-
 The author of the project has since started working on his own solution to this problem and in February launched a beta of "OpenScan Cloud", which is a cloud service, that automaticly processes the scanned images and produces the resulting 3D mesh. \cite{openscanCloud}
 
-I have decided to use a slightly different approach, and instead of sending the scanned pictures onto a server, where the processing and asembly would be done, I would do the required calculation locally.
+I have decided to use a slightly different approach, and instead of sending the scanned pictures to a server, where the processing and asembly would be done, I would do the required calculation locally.
 The only problem with this approach, is that the Raspberry Pi, which is used by the OpenScan project, is not powerful enough, to do the required processing.
 Because of this reason, I've decided to replace the Raspberry Pi with a more powerful alternative, which is the Jetson Xavier NX by Nvidia.
 Its more powerful processor, larger memory and CUDA capable graphics card allowed me to process the scanned data locally, without the need to send it to a server for 3D mesh reconstruction.
@@ -19,7 +18,7 @@ Its more powerful processor, larger memory and CUDA capable graphics card allowe
 With the change of the platform, some problems with the current solution became apparent.
 Even though the software for the scanner was created using platform independent technologies, the code itself was writen without the prospect of running on a different platform.
 The main cause of this was in my opinion the use of the programming tool Node-RED.
-It is a graphical programming languague built on Node.js, which allows the user, to connect together different nodes that represent parts of the code. \cite{node-red}
+It is a graphical programming language built on Node.js, which allows the user, to connect together different nodes that represent parts of the code. \cite{node-red}
 Some nodes can for example contain JavaScript code, that will be executed, when the node gets activated.
 
 The author of the OpenScan project decided to use an extension, which allowed him to use Python instead of JavaScript.
@@ -27,7 +26,7 @@ This solution did not allow for easy reuse of the python code, and so the code f
 
 I also belive, this was the reason, why the author decied to store each parameter of the scanners configuration in a separate file.
 Whenever the software needs to know the value of a parameter, such as the number of photos, the scaner should take, or the number of the GPIO pin used by a stepper motor, it loads a file, which contains the parameters value.
-Because the paths to these configuration files are hardcoded in the codebase, any changes to the configuration code is very difficult.
+Because the paths to these configuration files are hardcoded in the codebase, making changes to the configuration code can be very difficult.
 
 For these reasons, the code structure of the scanners software became quite bloated and chaotic, which must make maintanace of this project a hard task.
 It also means, that moving the codebase to a different platform would be quite complicated.
@@ -35,7 +34,7 @@ It also means, that moving the codebase to a different platform would be quite c
 
 \section{Used technologies}
 Because of the reasons stated in the previous section, I have decided to create my own software, which would controll the scanner.
-As my languague of choice, I used Python 3, because the Jetson provides an easy to use interface to use the GPIO pins, with Python.
+As my language of choice, I used Python 3, because the Jetson provides an easy to use interface to use the GPIO pins for this language.
 It also allowed me to reuse some parts of the original OpenScan software, such as the code that controlls the stepper motors, which I adjusted to suite my needs.
 I also replaced the many configuration files, with a single JSON document, which contains the values of each parameter and is loaded into memory after the start of the scanning procedure.
 
