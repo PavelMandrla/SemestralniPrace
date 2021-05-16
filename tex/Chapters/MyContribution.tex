@@ -144,12 +144,6 @@ The pipeline works in the following steps. \cite{alicevision_photogrammetry}
 
 \end{enumerate}
 
-The sixth step of calculating a depth map for each picture can be skipped, but it greatly impacts the quality of the resulting 3D geometry, which would be much less detailed.
-It can be used to quickly calculate a rough representation of the scanned object, because the calculation of the depth map is by far the most time consuming step in the reconstruction pipeline and the execution time grows with the number of scanned images.
-It is also the only part, which is dependent on CUDA, which might be a reason to skip it as well.
-While testing this part took about two hours to complete with the images downscaled by a factor of two.
-By downscaling the images even more, the duration of this operation can be shortened quite significantly, but effects the quality of the resulting 3D model.
-
 
 
 
