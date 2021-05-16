@@ -65,6 +65,22 @@ After the scanning procedure is finished, the resulting images are fed into the 
 The move from Node-RED to Python3 made the codebase much more compact and easily maintainable.
 I believe, that this would be the right move for the project in the future, because it would make addition of new features and maintenance much easier.
 
+\begin{figure}[h!]
+	\begin{center}
+	\includegraphics[width=.3\textwidth]{Figures/eagle/0.png}
+	\includegraphics[width=.3\textwidth]{Figures/eagle/5.png}
+	\includegraphics[width=.3\textwidth]{Figures/eagle/13.png}
+	\includegraphics[width=.3\textwidth]{Figures/eagle/40.png}
+	\includegraphics[width=.3\textwidth]{Figures/eagle/45.png}
+	\includegraphics[width=.3\textwidth]{Figures/eagle/50.png}
+	\includegraphics[width=.3\textwidth]{Figures/eagle/90.png}
+	\includegraphics[width=.3\textwidth]{Figures/eagle/95.png}
+	\includegraphics[width=.3\textwidth]{Figures/eagle/99.png}
+	\end{center}
+	\caption{ Example of captured pictures}	
+\end{figure}
+
+
 \section{Building the Structure from Motion Pipeline}
 
 For the reconstruction of the 3D mesh, I have chosen the AliceVision photogrammetry framework \cite{Moulon2012, Jancosek2011}.
@@ -80,7 +96,6 @@ This phenomenon is also known as dependency hell.
 	\centering
 	\includegraphics[width=0.4\textwidth]{Figures/C3DC_Fontaine.png}	
 	\caption{3D reconstruction created with MicMac (Taken from \cite{micmac_fontaine})}
-	%\label{fig:KernelFunction}
 \end{figure}
 
 Before trying to compile all the necessary dependencies, I installed and teseted a different photogrammetry software Micmac, which was much easier to install.
@@ -104,6 +119,37 @@ After some debugging, I found out, that the problem was in Boost library, on whi
 When AliceVision tries to load the input images, boost uses a system call, which is not implemented on the Jetson platform, which unfortunately, that I could not use the AliceVision photogrammetry pipeline to reconstruct the 3D model on the Jetson Xavier NX.
 I managed to run the pipeline at least on a desktop computer, where it ran without any problems.
 I believe, that if these system calls were implemented, or boost wasn't used for the task, the pipeline would run and the Jetson Xavier NS would be a suitable platform for such task.
+
+\section{Used SfM pipeline}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{Figures/pipeline.png}	
+	\caption{visualization of the used pipeline}
+	\label{Pipeline_vis}
+\end{figure}
+
+For the actual reconstruction of the 3D object, I used the default pipeline used by Meshroom pictured in figure \ref{Pipeline_vis}, which I had good results with, while testing.
+As can be seen in the picture, the pipeline consists of several nodes each representing a different binary from the AliceVision framework.
+The pipeline works in the following steps. \cite{alicevision_photogrammetry}
+
+\begin{enumerate}
+
+\item Visual data and EXIF information are loaded.
+\item Features are extracted from each image using the SIFT descriptor.
+\item Using the extracted features, the images are compared between each other to find images that are looking at the same area of the scene.
+\item The extracted features are matched between neighboring pictures.
+\item The StructureFromMotion node takes the camera information and information about the correspondence of features and tries to place them and the cameras into space.
+\item The depth value of each pixel in each picture is calculated.
+\item Finally the geometric representation of the scene can be calculated and then textured.
+
+\end{enumerate}
+
+The sixth step of calculating a depth map for each picture can be skipped, but it greatly impacts the quality of the resulting 3D geometry, which would be much less detailed.
+It can be used to quickly calculate a rough representation of the scanned object, because the calculation of the depth map is by far the most time consuming step in the reconstruction pipeline and the execution time grows with the number of scanned images.
+It is also the only part, which is dependent on CUDA, which might be a reason to skip it as well.
+While testing this part took about two hours to complete with the images downscaled by a factor of two.
+By downscaling the images even more, the duration of this operation can be shortened quite significantly, but effects the quality of the resulting 3D model.
+
 
 
 
