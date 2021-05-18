@@ -4,37 +4,49 @@ I have chosen to work with the OpenScan project because of multiple reasons.
 First I was very interested in photogrammetry and its use for 3D reconstruction.
 It also seemed to me, that the project has a lot of potential to become successful even with the more casual part of the 3D printing community, as it is easy to setup and has a simple user interface.
 It also uses the more simplistic approach of using photogrammetry, which requires less calibration than the use of structured light, so it is very user friendly.
-I also liked that the scanner does not just rotate the object along the Z axis, but allows the camera to capture the object from the top and bottom.
-
-Where I saw room for improvement, was that the output of the scanner is not a finished 3D representation of the scanned object, such as an .stl file, but just a set of images that the user has to process himself with an additional tool, such as Meshroom.
-The author of the project has since started working on his own solution to this problem and in February launched a beta of "OpenScan Cloud", which is a cloud service, that automatically processes the scanned images and produces the resulting 3D mesh. \cite{openscanCloud}
+Unlike some of the previously mentioned projects, it is still actively supported by the projects author, who is still trying to improve the the project by bringing new features and designs to the platform.
+I also liked that the scanner does not just rotate the object along the Z axis, but allows the camera to capture the object from the top and bottom, which means, that the scanner can capture more of the object and create a higher quality result.
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.5\textwidth]{Figures/scanner1.jpg}	
+	\includegraphics[width=8cm]{Figures/scanner1.jpg}	
 	\caption{Assembled scanner}
 	%\label{fig:KernelFunction}
 \end{figure}
 
+Where I saw room for improvement, was that the output of the scanner is not a finished 3D representation of the scanned object, such as an .stl file, but just a set of images that the user has to process himself with an additional tool, such as Meshroom.
+The author of the project has since started working on his own solution to this problem and in February launched a beta of OpenScan Cloud, which is a cloud service, that automatically processes the scanned images and produces the resulting 3D mesh. \cite{openscanCloud}
+
+
 I have decided to use a slightly different approach, and instead of sending the scanned pictures to a server, where the processing and assembly would be done, I would do the required calculation locally on the scanner itself.
 The only problem with this approach, is that the Raspberry Pi, which is used by the OpenScan project, is not powerful enough, to do the required processing.
-Also the photogrammetry reconstruction pipeline AliceVision \cite{Moulon2012, Jancosek2011}, which I have chosen for the mesh reconstruction is dependent on CUDA, so a device with a CUDA capable GPU.
-Because of these reasons, I've decided to replace the Raspberry Pi with a more powerful alternative, which is the Jetson Xavier NX by Nvidia.
-Its more powerful 6 core processor, larger memory and CUDA capable graphics card allowed me to process the scanned data locally, without the need to send it to a server for 3D mesh reconstruction.
+Also the photogrammetry reconstruction pipeline AliceVision \cite{Moulon2012, Jancosek2011}, which I have chosen for the mesh reconstruction is dependent on CUDA, so a device with a CUDA capable GPU would be needed to run the reconstruction pipeline.
+Because of these reasons, I have decided to replace the Raspberry Pi with a more powerful alternative, which is the Jetson Xavier NX by Nvidia.
+Its more powerful 6 core processor, larger memory and CUDA capable graphics card would allow me to process the scanned data locally, without the need to send it to a server.
 
 
 The assembly of the scanner was very easy and straight forward.
 I have printed all the required parts on my 3D printer, which are designed to be easy to print without the need for any support material and assembled them together.
 I ordered the electronics from the projects author. The main control board came already soldered together, but other parts, such as the front ring light needed some soldering.
-Because of the Covid-19 crisis, the Jetson Xavier NX took a few months to arrive, so I temporarily used my Raspberry Pi 3 to test the scanners.
+Because of the Covid-19 crisis, the Jetson Xavier NX took a few months to arrive, so I temporarily used my Raspberry Pi 3 to test the scanner.
 With the arrival of the Jetson, I could finally begin to port the scanners software to the new device.
+
+\begin{figure}[h!]
+	\centering
+	 \subfloat[\centering]{{\includegraphics[width=6cm]{Figures/scanner2.jpg} }}
+    \qquad
+    \subfloat[\centering]{{\includegraphics[width=6cm]{Figures/scanner3.jpg} }}
+	\caption{Assembled scanner}
+\end{figure}
+\newpage
+
 
 
 \section{Evaluation of the existing solution}
 With the change of the platform, some problems with the current solution became apparent.
 Even though the software for the scanner was created using platform independent technologies, the code itself was written without the prospect of running on a different platform.
 The main cause of this was in my opinion the use of the programming tool Node-RED.
-It is a graphical programming language built on Node.js, which allows the user, to connect together different nodes that represent parts of the code. \cite{node-red}
+It is a graphical programming language built on top of Node.js, which allows the user, to connect together different nodes that represent parts of the code. \cite{node-red}
 Some nodes can for example contain JavaScript code, that will be executed, when the node gets activated.
 
 The author of the OpenScan project decided to use an extension, which allowed him to use Python instead of JavaScript.
@@ -54,9 +66,9 @@ As my language of choice, I used Python 3, because the Jetson provides an easy t
 It also allowed me to reuse some parts of the original OpenScan software, such as the code that controls the stepper motors, which I adjusted to suite my needs.
 I opted for GStreamer in combination with OpenCV, to interface with the camera and capture images.
 To circumvent problems with OpenCVs buffering of the captured images, I had to run the image capturing code in a separate thread to always get the latest frame.
-I also replaced the many configuration files, with a single JSON document, which contains the values of each parameter and is loaded into memory after the start of the scanning procedure.
+I also replaced the many configuration files, with a single JSON document, which contains the values of each parameter and is loaded into memory at the start of the scanning procedure.
 
-My implementation was mainly concerned with the scanning process itself, as I decided not to reimplement some features of the Openscan Project, such as the web-based user interface, or the use of a SAMBA protocol to easily share the scanned files, as they were not crucial for my project.
+My implementation was mainly concerned with the scanning process itself, as I decided not to reimplement some features of the OpenScan Project, such as the web-based user interface, or the use of a SAMBA protocol to easily share the scanned files, as they were not crucial for my project.
 The program starts by parsing the configuration JSON file.
 It then executes the scanning procedure, positioning the model according to the settings specified by the configuration, and taking a photo of the model each time.
 The captured images are saved into a new directory, whose path is also specified in the configuration.
@@ -77,10 +89,10 @@ I believe, that this would be the right move for the project in the future, beca
 	\includegraphics[width=.3\textwidth]{Figures/eagle/95.png}
 	\includegraphics[width=.3\textwidth]{Figures/eagle/99.png}
 	\end{center}
-	\caption{ Example of captured pictures}	
+	\caption{ Example of captured images}	
 \end{figure}
 
-
+\newpage
 \section{Building the Structure from Motion Pipeline}
 
 For the reconstruction of the 3D mesh, I have chosen the AliceVision photogrammetry framework \cite{Moulon2012, Jancosek2011}.
@@ -103,22 +115,22 @@ Micmac is free open-source photogrammetry reconstruction software, which was dev
 It claims to be highly versatile and allow the creation of both 3D models and ortho-imagery.
 
 I have experimented with MicMac for a week and followed several tutorials, but I was not able to create a 3D model from my scanned images, which would normally result in a 3D mesh in Meshroom.
-The error messages, which MicMac showed me after failed reconstructions were quite vague and non informative and sometimes in french, so I am unsure, where the problem was, but I suspect, that it even though MicMac claims to be versatile, it is not suited for reconstruction of small objects.
+The error messages, which MicMac showed me after failed reconstructions were quite vague and non informative and sometimes in french, so I am unsure, where the problem was, but I suspect, that even though MicMac claims to be versatile, it is not suited for reconstruction of small objects.
 This suspicion is based on the fact, that most of the materials available on the MicMac wiki are focused on orthophotography and reconstruction of large objects, such as buildings.
 
 
 After this I looked into other available photogrammetry 3D reconstruction solutions, such as OpenSfM \cite{opensfm} and COLMAP \cite{schoenberger2016sfm, schoenberger2016mvs}, but similarly to AliceVision, they required many dependencies, so I returned to building AliceVision and its dependencies, as I tested it before and knew I could successfully use it to reconstruct a 3D mesh.
 
-I took quite a long time to build it, because some of the libraries did not expect to be compiled on the AArch64 platform and I would get stuck on trying to figure out  problems with their compilation.
-Most of the times the libraries wanted to use features as SSE2 instructions, which were not supported by the Jetson and the build system was not setup correctly to exclude these parts of the code.
-Unfortunately I made a mistake, while fixing such error, which has overwritten the C build flags, which lead to the build of the AliceVision framework to fail after an hour of compilation, which was frustrating to debug and took me two weeks to find where the problem was.
+It took quite a long time to build it, because some of the libraries did not expect to be compiled on the AArch64 platform and I would get stuck on trying to figure out  problems with their compilation.
+Most of the times the libraries wanted to use features such as SSE2 instructions, which were not supported by the Jetson and the build system was not setup correctly to exclude these parts of the code.
+Unfortunately I made a mistake, while fixing such error, which has overwritten the C build flags, which lead to the build of the AliceVision framework failing after an hour of compilation, which was frustrating to debug and took me two weeks to find where the problem was.
 
 Thankfully I have successfully managed to compile and install the AliceVision framework on the Jetson Xavier NX and run Meshroom on it.
 But when I tried to run the photogrammetry pipeline and create a 3D model, Meshroom refused to load the images.
 After some debugging, I found out, that the problem was in Boost library, on which AliceVision is dependent.
-When AliceVision tries to load the input images, boost uses a system call, which is not implemented on the Jetson platform, which unfortunately, that I could not use the AliceVision photogrammetry pipeline to reconstruct the 3D model on the Jetson Xavier NX.
+When AliceVision tries to load the input images, boost uses a system call, which is not implemented on the Jetson platform, which unfortunately meant, that I could not use the AliceVision photogrammetry pipeline to reconstruct the 3D model on the Jetson Xavier NX.
 I managed to run the pipeline at least on a desktop computer, where it ran without any problems.
-I believe, that if these system calls were implemented, or boost wasn't used for the task, the pipeline would run and the Jetson Xavier NS would be a suitable platform for such task.
+I believe, that if these system calls were implemented, or boost wasn't used for the task, the pipeline would run and the Jetson Xavier NX would be a suitable platform for such task.
 
 \section{Used SfM pipeline}
 \begin{figure}[h!]
@@ -143,6 +155,12 @@ The pipeline works in the following steps. \cite{alicevision_photogrammetry}
 \item Finally the geometric representation of the scene can be calculated and then textured.
 
 \end{enumerate}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.6\textwidth]{Figures/cameras_placed.png}	
+	\caption{visualization of cameras and feature points placed in space after StructureFromMotion step}
+\end{figure}
 
 
 
