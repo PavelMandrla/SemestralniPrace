@@ -1,10 +1,11 @@
 {
    "arm_angle" : 60,
-   "arm_positions" : 1,
+   "arm_positions" : 5,
    "turn_table_positions" : 20,
 
    "save_dir" : "/home/user/",
-   "reconstruct" : false,
+   "path_to_meshroom_batch": "~/Meshroom/meshroom_batch",
+   "reconstruct": false,
 
    "turn_table" : {
          "dir_pin" : 9,
@@ -32,5 +33,4 @@
       "framerate" : 21,
       "flip_method" : 2
    }
-
 }

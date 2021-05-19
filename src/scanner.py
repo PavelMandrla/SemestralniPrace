@@ -49,7 +49,7 @@ class Scanner(object):
         turn_table_step = 360 / settings["turn_table_positions"]
         for x in range(settings["turn_table_positions"]):
             self.turn_table.turn(turn_table_step)
-            sleep(0.5)
+            sleep(3)
             self.camera.capture("%s/%d.png" % (self.result_dir, self.frame_num))
             self.frame_num += 1
             #sleep(1)

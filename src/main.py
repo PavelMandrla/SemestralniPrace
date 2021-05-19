@@ -4,9 +4,10 @@ import sys
 
 import reconstructor
 
-
 settings.load_settings(str(sys.argv[1]))
+
 scanner = Scanner()
 scanner.scan()
+
 if settings['reconstruct']:
     reconstructor.reconstruct()
