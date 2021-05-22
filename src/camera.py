@@ -56,5 +56,11 @@ class Camera:
     def release_camera(self):
         self.capCleaner.running = False
 
+    def enhance(self, img):
+        l, a, b = cv2.split(cv2.cvtColor(img, cv2.COLOR_BGR2LAB))
+        clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8,8))
+        cl = clahe.apply(l)
+        return cv2.cvtColor(cv2.merge((cl,a,b)), cv2.COLOR_LAB2BGR)
+
     def capture(self, filepath):
-        cv2.imwrite(filepath, self.capCleaner.last_frame)
+        cv2.imwrite(filepath, self.enhance(self.capCleaner.last_frame))
